@@ -1,0 +1,14 @@
+---
+  - name: Request certificate from Microsoft ADCS CA
+    microsoft_adcs_cert:
+      ca_server: "{{ca_server}}"
+      user: "{{ca_admin_user}}"
+      password: "{{ca_admin_pass}}"
+      #Refer ca_template_name variable in inventory/hosts file
+      ca_template_name: '{{ca_template_name}}'
+      san_names: "{{san_names}}"
+      csr_file_path: "{{csr_file_path}}"
+      cert_encoding: "{{cert_encoding_type}}"
+    register: result
+  - debug: 
+      msg: "Signed SSL cert is successfully downloaded in {{result['msacds_certreq_facts']['cert_full_path']}}"  

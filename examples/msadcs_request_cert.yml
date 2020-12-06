@@ -1,0 +1,39 @@
+---
+# Author: nareshhkumar512@gmail.com
+# Generosity: Designer Brands Inc. 
+# Inspiration: 
+    # Nate Britton (https://www.linkedin.com/in/nsbritton)
+    # https://bgstack15.wordpress.com/author/bgstack15/
+# Title: Playbook that Deploys The Role certreq
+# Purpose: Exhibit usage of microsoft_adcs_cert role.
+# Usage:
+#    ansible-playbook -v msadcs_request_cert.yml -i localhost, -e '{
+       # "ca_server": "mscasever.mydomain.com",
+       # "ca_admin_user": "mydomain\\admin",
+       # "ca_admin_pass": "<Password here>",
+       # "ca_template_name": "<Supply CA template name>",
+       # "san_names": [
+       # "automationsample1.dswincd.corp",
+       # "automationsample2.dswincd.corp"
+       # ],
+       # "csr_file_path": "/tmp/automationsample.dswincd.corp.csr",
+       #"cert_encoding_type": "pem"
+      #}'
+#    Use this playbook when you want to download a Microsoft CA-signed certificate form a Linux host.
+# Success Output: 
+    # Output will be available in a fact named 'result'
+    # ok: [localhost] => {
+        #"msg": "Signed cert is successfully downloaded in /tmp/automationsample.dswincd.corp.crt"
+    #  }
+# Failure Output:
+    #FAILED! => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "msg": "400:\"Denied by Policy Module  0x80094800, 
+    # The request was for a certificate template that is not supported by the Active Directory Certificate Services policy: TEST_POLICY.\r"}
+# Reference
+    # Note: For variable ca_template_name Use template name, not "template display name" 
+    # https://social.technet.microsoft.com/Forums/en-US/d5cafc77-3376-43ca-94fd-6b07f7cb193f/using-certutilcertreq-to-get-sccm-client-certs-nondomain-clients?forum=configmgrgeneral
+
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  roles:
+  - microsoft_adcs_cert
