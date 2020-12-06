@@ -13,17 +13,17 @@
        # "ca_admin_pass": "<Password here>",
        # "ca_template_name": "<Supply CA template name>",
        # "san_names": [
-       # "automationsample1.dswincd.corp",
-       # "automationsample2.dswincd.corp"
+       # "automationsample1.mydomain.corp",
+       # "automationsample2.mydomain.corp"
        # ],
-       # "csr_file_path": "/tmp/automationsample.dswincd.corp.csr",
+       # "csr_file_path": "/tmp/automationsample.mydomain.corp.csr",
        #"cert_encoding_type": "pem"
       #}'
 #    Use this playbook when you want to download a Microsoft CA-signed certificate form a Linux host.
 # Success Output: 
     # Output will be available in a fact named 'result'
     # ok: [localhost] => {
-        #"msg": "Signed cert is successfully downloaded in /tmp/automationsample.dswincd.corp.crt"
+        #"msg": "Signed cert is successfully downloaded in /tmp/automationsample.mydomain.corp.crt"
     #  }
 # Failure Output:
     #FAILED! => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "changed": false, "msg": "400:\"Denied by Policy Module  0x80094800, 
