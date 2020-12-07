@@ -7,21 +7,21 @@ This Ansible role, microsoft_adcs_cert, is designed to make it easy for a Linux 
 ## Pre-Requisites:
 
  1. Ansible v2.9 or above
- 2. requests_ntlm python package should be installed and available in ansible control machine. Use below command if the package is not avaialble.
+ 2. requests_ntlm python package should be installed and available in ansible control machine. Use below command if the package is not avaialble.\
         `pip install requests_ntlm`
  3. CA server should be reachable from Ansible controller and 'https' webservices should be enabled and available.
 
 ## Steps to install:
 
   1. Navigate to your ansible project's root directory. 
-  2. Clone the role using below command
+  2. Clone the role using below command\
         `git clone https://github.com/nareshhkumar512/microsoft_adcs_cert.git`
   3. Include in main play.
 
 ### Usage inside a playbook:
-```
+```yaml
 - hosts: localhost
-   gather_facts: no
+  gather_facts: no
   connection: local
   roles:
   - microsoft_adcs_cert
