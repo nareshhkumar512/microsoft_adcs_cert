@@ -33,7 +33,7 @@ The role downloads the signed pem/der formatted SSL certificate file.
 ## Input Requirements:
 |Variable Name| Usage |
 |--|--|
-|ca_server| Include Fully Qualified domain name or IP address of the Certificate Microsoft Active Directory Certificate server. |
+|ca_server| Include Fully Qualified domain name or IP address of the Microsoft Active Directory Certificate server. |
 | ca_admin_user |  Admin user with permission to generate certificate using template mentioned in `ca_template_name` variable |
 |ca_admin_pass| Admin password |
 |ca_template_name| Name of the certificate template to be used to sign the CSR |
