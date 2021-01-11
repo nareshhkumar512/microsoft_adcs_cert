@@ -221,7 +221,7 @@ def _request_cert_req():
     response = session.post(cert_req_ep,data=payload,headers=headers,verify=False)
     rsp_txt = response.text
     try :
-        match = re.search('certnew.cer\?ReqID=(.+?)\&\"\+getEncoding',rsp_txt)
+        match = re.search('certnew.p7b\?ReqID=(.+?)\&\"\+getEncoding',rsp_txt)
         req_id = match.group(1)
     except Exception:
         match = re.search('The disposition message is (.+?)\\n',rsp_txt)
@@ -239,7 +239,7 @@ def _download_cert_req(req_id) :
             cert_obj(dict) : returns { 'cert_full_path' '/full/path/to/cert/in/local/disc', 
                                        'err': 'Exception messages if any' or null}
     '''
-    crt_path = csr_path.replace('.csr','.crt')
+    crt_path = csr_path.replace('.csr','.p7b')
     download_url = cert_down_ep.replace('<req_id>',req_id)
 
     headers=dict()
@@ -303,7 +303,7 @@ def _exec_module(module):
     cert_req_ep = 'https://{ca}/certsrv/certfnsh.asp'.format(ca=ca)
     encoding = args['cert_encoding']
     global cert_down_ep
-    cert_down_ep = "https://{ca}/certsrv/certnew.cer?ReqID=<req_id>&Enc={encoding}".format(ca=ca,encoding=ENCODING_MAP[encoding])    
+    cert_down_ep = "https://{ca}/certsrv/certnew.p7b?ReqID=<req_id>&Enc={encoding}".format(ca=ca,encoding=ENCODING_MAP[encoding])    
     req_id = _request_cert_req()
     time.sleep(SLEEP_TIME)
     crt_path_obj = _download_cert_req(req_id)
@@ -318,7 +318,7 @@ def main():
     Returns :
         path facts to the invoking ansible play (dict) : returns msacds_certreq_facts dict
                                     "msacds_certreq_facts": {
-                                      "cert_full_path": "/tmp/ansiblehost.mydomain.com.crt",
+                                      "cert_full_path": "/tmp/ansiblehost.mydomain.com.p7b",
                                        "err": null
                                         },
                                         "msg": "200:Success"

@@ -28,7 +28,7 @@ This Ansible role, microsoft_adcs_cert, is designed to make it easy for a Linux 
  ```
   _Refer examples/msadcs_request_cert.yml documentation section. for more information_
 
-The role downloads the signed pem/der formatted SSL certificate file.
+The role downloads the signed pem/der formatted SSL certificate file along with chains in a p7b format.
 
 ## Input Requirements:
 |Variable Name| Usage |
@@ -47,6 +47,7 @@ The role downloads the signed pem/der formatted SSL certificate file.
 - Any backslash in username/password should be escaped with '\\', refer examples/msadcs_request_cert.yml .
 - Compatible with both py v2.7 and py v3.6+
 - SSL Certificate file will be downloaded in the same directory as input CSR file.
+- Use OpenSSL command `openssl pkcs7 -print_certs -in certificate.p7b -out certificate.cer` to convert Convert P7B to PEM
 
 
 ## Weblinks
