@@ -47,7 +47,9 @@ The role downloads the signed pem/der formatted SSL certificate file along with 
 - Any backslash in username/password should be escaped with '\\', refer examples/msadcs_request_cert.yml .
 - Compatible with both py v2.7 and py v3.6+
 - SSL Certificate file will be downloaded in the same directory as input CSR file.
-- Use OpenSSL command `openssl pkcs7 -print_certs -in certificate.p7b -out certificate.cer` to convert Convert P7B to PEM
+- If the `cert_encoding_type` option is set to `pem` entire certificate chain bundle will be downloaded as a `.p7b` file
+- If the `cert_encoding_type` option is set to `der` only the leaf certificate will be downloaded as a `.crt` file
+- Use OpenSSL command `openssl pkcs7 -print_certs -in certificate.p7b -out certificate.cer` to convert Convert PEM formatted P7B to PEM Certificate.
 
 
 ## Weblinks

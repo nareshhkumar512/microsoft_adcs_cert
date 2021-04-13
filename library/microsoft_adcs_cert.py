@@ -229,7 +229,7 @@ def _request_cert_req():
         raise ValueError(err_msg)
     return req_id
 
-def _download_cert_req(req_id) :
+def _download_cert_req(req_id,encoding) :
     '''
     private function to download certificate after signing.
     Parameters :
@@ -255,10 +255,18 @@ def _download_cert_req(req_id) :
     headers['User-Agent'] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36"
     err=None
     try:
-        response = session.get(download_url,headers=headers,verify=False)
-        file = open(crt_path, "w")
-        file.write(response.text)
-        file.close()
+        #Handle for DER formatted file download.
+        if encoding == "der" :
+          #Download only leaf cert  
+          response = session.get(download_url.replace('.p7b','.cer'),headers=headers,verify=False)
+          crt_path = csr_path.replace('.p7b','.crt')
+          file = open(crt_path, "wb")
+          file.write(response.content)
+        else:
+          response = session.get(download_url,headers=headers,verify=False)
+          file = open(crt_path, "w")
+          file.write(response.text)
+          file.close()
     except Exception as e:
         err = str(e)
     if err: 
@@ -306,7 +314,7 @@ def _exec_module(module):
     cert_down_ep = "https://{ca}/certsrv/certnew.p7b?ReqID=<req_id>&Enc={encoding}".format(ca=ca,encoding=ENCODING_MAP[encoding])    
     req_id = _request_cert_req()
     time.sleep(SLEEP_TIME)
-    crt_path_obj = _download_cert_req(req_id)
+    crt_path_obj = _download_cert_req(req_id,encoding)
     err_msg = crt_path_obj['err']
     if err_msg:
         module.fail_json(msg='400:'+err_msg)
