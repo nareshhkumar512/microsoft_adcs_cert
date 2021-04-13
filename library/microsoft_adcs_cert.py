@@ -259,7 +259,7 @@ def _download_cert_req(req_id,encoding) :
         if encoding == "der" :
           #Download only leaf cert  
           response = session.get(download_url.replace('.p7b','.cer'),headers=headers,verify=False)
-          crt_path = csr_path.replace('.p7b','.crt')
+          crt_path = csr_path.replace('.csr','.crt')
           file = open(crt_path, "wb")
           file.write(response.content)
         else:
