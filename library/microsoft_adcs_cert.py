@@ -12,7 +12,8 @@ description:
     - This module generates and downloads certs from internal Microsoft Active Directory Certificate Services (CA).
     - This module does not generate a CSR, CSR should be pre-existing in local disk and full path for CSR file should be passed in as variable.
     - This module was tested only against Windows Server 2012 R2 Datacenter 64 bit Edition.
-    - This module needs requests_ntlm [pip install requests_ntlm] package as a pre-requisite.
+    - This module uses kerberos as authentication mechanism, since NTLM has vulnerabilities.
+    - This module needs requests_kerberos,krbcontext [pip install requests_kerberos krbcontext] package as a pre-requisite.
 version_added: 2.9
 author: nareshhkumar512@gmail.com
 options:
@@ -27,9 +28,9 @@ options:
        - Admin user name that has access to request certificate from the CA.
     type: str
     required: True
-  password:
+  credential_cachepath:
     description:
-       - Password of the C(user).
+       - Full path to the kerberos credentail cache for C(user).
     type: str
     required: True
   ca_template_name:
@@ -58,18 +59,19 @@ options:
 notes:
    - Tested only against Windows Server 2012 R2 Datacenter 64 bit Edition.
    - Backslash should be escaped , refer example.
+   - Valid Kerberos ticket TGT must be already avaliable in the controller machine by running the kinit command.
    - 'Compatible with both py v2.7 and py v3.6+'
    - requests_ntlm package should be installed and available.
-        pip install requests_ntlm
-        pip3 install requests_ntlm
+        pip3 install requests_kerberos	
+        pip3 install krbcontext
    - Cert file will be written in the same directory as input CSR file.
 '''
 EXAMPLES = r'''
 - name: Upload a CSR and download Signed SSL cert
   msadcs_certreq:
     ca_server: msadserver.mydomain.com
-    user: "domain\\user"
-    password: "myadminpassword"
+    user: "user@DOMAIN.COM"	
+    credential_cachepath: "/tmp/user@DOMAIN.COM"
     ca_template_name: CSR_SIGNING_TEMPLATE_2048
     san_names:
       - altname1.mydomain.com
@@ -91,7 +93,8 @@ import time
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-from requests_ntlm import HttpNtlmAuth
+from requests_kerberos import HTTPKerberosAuth, OPTIONAL	
+from krbcontext import krbContext
 
 if sys.version.startswith('3') :
     from urllib.parse import quote_plus as encode_util
@@ -122,9 +125,9 @@ class ArgumentSpec(object):
                 aliases=['ca_admin_user'],
                 type='str'
                 ),
-            password=dict(
+            credential_cachepath=dict(
                 required=True,
-                aliases=['ca_admin_pass'],
+                aliases=['ccachepath'],
                 type='str',
                 no_log=True
             ),
@@ -293,14 +296,10 @@ def _exec_module(module):
     args = module.params
     global csr_path
     csr_path = args['csr_file_path']
-    global user
-    user = args['user']
-    global passwd
-    passwd = args['password']
     global session
     session=requests.Session()
     session.verify=False
-    session.auth = HttpNtlmAuth(user,passwd)
+    session.auth = HTTPKerberosAuth(mutual_authentication=OPTIONAL)
     global ca_template
     ca_template=args['ca_template_name']
     global sans
@@ -339,8 +338,12 @@ def main():
         supports_check_mode=spec.supports_check_mode
     )
     try:
-        results = _exec_module(module)
-        module.exit_json(changed=True,msacds_certreq_facts=results,msg='200:Success')
+        user = module.params['user']	
+        credential_cachepath = module.params['credential_cachepath']
+        with krbContext(principal=user,	
+                ccache_file=credential_cachepath):
+          results = _exec_module(module)
+          module.exit_json(changed=True,msacds_certreq_facts=results,msg='200:Success')
     except Exception as ex:
         module.fail_json(msg='400:'+str(ex))
 if __name__ == '__main__':

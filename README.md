@@ -7,9 +7,10 @@ This Ansible role, microsoft_adcs_cert, is designed to make it easy for a Linux 
 ## Pre-Requisites:
 
  1. Ansible v2.9 or above
- 2. requests_ntlm python package should be installed and available in ansible control machine. Use below command if the package is not avaialble.\
-        `pip install requests_ntlm`
+ 2.  requests_kerberos,krbcontext python package should be installed and available in ansible control machine. Use below command if the package is not avaialble.\
+        `pip install requests_kerberos krbcontext`
  3. CA server should be reachable from Ansible controller and 'https' webservices should be enabled and available.
+ 4. Valid Kerberos ticket TGT must be already avaliable in the controller machine by running the kinit command.
 
 ## Steps to install:
 
@@ -34,8 +35,8 @@ The role downloads the signed pem/der formatted SSL certificate file along with 
 |Variable Name| Usage |
 |--|--|
 |ca_server| Include Fully Qualified domain name or IP address of the Microsoft Active Directory Certificate server. |
-| ca_admin_user |  Admin user with permission to generate certificate using template mentioned in `ca_template_name` variable |
-|ca_admin_pass| Admin password |
+| ca_admin_user |  Admin user with permission to generate certificate using template mentioned in `ca_template_name` variable - format `user@MYDOMAIN.COM` |
+|credential_cachepath| Full path to credential cache file for the `ca_admin_user` |
 |ca_template_name| Name of the certificate template to be used to sign the CSR |
 |san_names| List of Subject alternative names |
 |csr_file_path| Full path to the CSR file in local machine |
@@ -44,7 +45,7 @@ The role downloads the signed pem/der formatted SSL certificate file along with 
 ## Notes:
 
 - Tested only against Windows Server 2012 R2 Datacenter 64 bit Edition.
-- Any backslash in username/password should be escaped with '\\', refer examples/msadcs_request_cert.yml .
+- Supply username in user@MYDOMAIN.COM format .
 - Compatible with both py v2.7 and py v3.6+
 - SSL Certificate file will be downloaded in the same directory as input CSR file.
 - If the `cert_encoding_type` option is set to `pem` entire certificate chain bundle will be downloaded as a `.p7b` file

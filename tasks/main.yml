@@ -3,7 +3,7 @@
     microsoft_adcs_cert:
       ca_server: "{{ca_server}}"
       user: "{{ca_admin_user}}"
-      password: "{{ca_admin_pass}}"
+      credential_cachepath: "{{credential_cachepath}}"
       #Refer ca_template_name variable in inventory/hosts file
       ca_template_name: '{{ca_template_name}}'
       san_names: "{{san_names}}"

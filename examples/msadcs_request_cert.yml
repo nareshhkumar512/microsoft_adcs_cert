@@ -9,8 +9,8 @@
 # Usage:
 #    ansible-playbook -v msadcs_request_cert.yml -i localhost, -e '{
        # "ca_server": "mscasever.mydomain.com",
-       # "ca_admin_user": "mydomain\\admin",
-       # "ca_admin_pass": "<Password here>",
+       # "ca_admin_user": "admin@MYDOMAIN.COM", remember the case
+       # "credential_cachepath": "/tmp/admin@MYDOMAIN.COM",
        # "ca_template_name": "<Supply CA template name>",
        # "san_names": [
        # "automationsample1.mydomain.corp",
@@ -37,3 +37,13 @@
   connection: local
   roles:
   - microsoft_adcs_cert
+    vars:
+        ca_server: "myadcs.mydomain.com"
+        ca_admin_user: "admin@MYDOMAIN.COM"
+        credential_cachepath: "/tmp/admin@MYDOMAIN.COM"
+        ca_template_name: 'WEB_TEMPLATE'
+        san_names: 
+        - altname1.mydomain.com
+        - altname2.mydomain.com
+        csr_file_path: "/tmp/my.csr"
+        cert_encoding_type: "pem"
